@@ -1,17 +1,25 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Results from './pages/Results';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Search from "./components/Search";
+import Results from "./components/Results";
+import History from "./components/History";
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/results" element={<Results />} />
-      </Routes>
+      <div>
+        <nav>
+          <Link to="/">Recherche</Link> | <Link to="/results">Résultats</Link> | <Link to="/history">Historique</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Search />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </div>
     </Router>
   );
 }
 
 export default App;
+
