@@ -1,41 +1,32 @@
 import React, { useState } from 'react';
+import { Search } from 'lucide-react';
 
-function SearchBar({ onResults }) {
-  const [query, setQuery] = useState('');
+export default function SearchBar({ onSearch }) {
+  const [input, setInput] = useState('');
 
-  const handleSearch = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
-
-    try {
-      const response = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(query)}`);
-      const data = await response.json();
-      onResults(data.results);
-    } catch (error) {
-      console.error("Erreur lors de la recherche :", error);
+    if (input.trim()) {
+      onSearch(input.trim());
     }
   };
 
   return (
-    <form
-      onSubmit={handleSearch}
-      className="flex flex-col sm:flex-row items-center justify-center gap-4 p-6 max-w-2xl mx-auto mt-12 bg-white rounded-2xl shadow-md"
-    >
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 max-w-xl mx-auto">
       <input
         type="text"
-        placeholder="🔍 Tape ta recherche..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full sm:flex-1 p-3 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Tape ta question ici..."
+        className="border border-gray-300 dark:border-gray-600 px-4 py-2 rounded w-full"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
       <button
         type="submit"
-        className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all"
+        className="p-2 bg-primary text-white rounded hover:bg-blue-600"
+        title="Rechercher"
       >
-        Rechercher
+        <Search />
       </button>
     </form>
   );
 }
-
-export default SearchBar;
