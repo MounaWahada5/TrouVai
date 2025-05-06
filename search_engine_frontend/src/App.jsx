@@ -4,9 +4,11 @@ import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Outlet /> {/* pour afficher les routes enfants */}
+      <div className="flex-1">
+        <Outlet />
+      </div>
     </div>
   );
 };

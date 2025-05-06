@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.search_service import search_query
+from services.search_service import hybrid_search
 
 search_bp = Blueprint("search", __name__)
 
@@ -11,7 +11,7 @@ def search():
         if not query:
             return jsonify({"error": "Aucune requête fournie."}), 400
 
-        results = search_query(query)
+        results = hybrid_search(query)
         return jsonify(results)
 
     except Exception as e:

@@ -55,66 +55,20 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-white dark:bg-gray-800 shadow-md">
-      <h1 className="text-xl font-bold text-primary dark:text-white">🔎 TrouVai</h1>
-      <NavLink to="/login" className="text-gray-600 dark:text-gray-300 hover:text-primary">
-  Connexion
-</NavLink>
-<NavLink to="/register" className="text-gray-600 dark:text-gray-300 hover:text-primary">
-  Inscription
-</NavLink>
+    <div className="flex justify-between items-center w-full px-6 py-4 bg-white dark:bg-gray-800 shadow">
+    <div className="flex items-center gap-4">
+      <NavLink to="/" className="text-blue-600 font-bold text-xl flex items-center gap-1">
+        🔍 TrouVai
+      </NavLink>
+    </div>
+  
+    <div className="flex items-center gap-4">
+      <NavLink to="/login" className="text-gray-600 hover:text-blue-600">Connexion</NavLink>
+      <NavLink to="/register" className="bg-blue-600 text-white px-3 py-1 rounded-full hover:bg-blue-700">
+        Inscription
+      </NavLink>
+    </div>
+  </div>
 
-
-      <div className="flex gap-4 items-center">
-        <NavLink to="/" className={({ isActive }) =>
-          isActive ? 'text-primary font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-primary'
-        }>
-          Accueil
-        </NavLink>
-
-        <NavLink to="/search" className={({ isActive }) =>
-          isActive ? 'text-primary font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-primary'
-        }>
-          Rechercher
-        </NavLink>
-
-        <NavLink to="/history" className={({ isActive }) =>
-          isActive ? 'text-primary font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-primary'
-        }>
-          Historique
-        </NavLink>
-
-        <NavLink to="/favorites" className={({ isActive }) =>
-          isActive ? 'text-primary font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-primary'
-        }>
-          Favoris
-        </NavLink>
-
-        <NavLink to="/about" className={({ isActive }) =>
-          isActive ? 'text-primary font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-primary'
-        }>
-          À propos
-        </NavLink>
-
-        <button
-          onClick={toggleDarkMode}
-          className="ml-2 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
-        >
-          {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-800" />}
-        </button>
-
-        {user && (
-          <div className="flex items-center space-x-2 ml-4">
-            <span className="text-sm text-primary dark:text-white">👤 {user}</span>
-            <button
-              onClick={handleLogout}
-              className="text-red-500 hover:underline text-sm"
-            >
-              Déconnexion
-            </button>
-          </div>
-        )}
-      </div>
-    </nav>
   );
 }

@@ -3,8 +3,11 @@ export async function searchQuery(query) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query }),
-    })
-    return await res.json()
+    });
+    if (!response.ok) {
+      throw new Error("Échec de la requête vers le backend");
+    }
+    return await response.json();
   }
   
   export async function getHistory() {

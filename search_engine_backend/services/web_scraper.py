@@ -22,5 +22,6 @@ def scrape_web(query, max_results=5):
             "text": text,
             "url": href
         })
+        
 
     return results
