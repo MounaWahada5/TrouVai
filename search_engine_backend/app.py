@@ -1,36 +1,25 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_cors import CORS
-from services.search_service import hybrid_search  # Import depuis le bon module
+from extensions import db, bcrypt
+from config import SECRET_KEY
+from routes.search_routes import search_bp
+from routes.auth_routes import auth_bp
+from models import *
 
 app = Flask(__name__)
-CORS(app)  # Autorise les requêtes cross-origin (depuis le frontend React)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 
-@app.route('/api/search', methods=['POST'])
-def search():
-    data = request.get_json()
-    query = data.get('query', '')
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    if not query:
-        return jsonify({'error': 'Query parameter is required'}), 400
+db.init_app(app)
+bcrypt.init_app(app)
 
-    try:
-        results = hybrid_search(query)
+app.register_blueprint(search_bp, url_prefix="/api/search")
+app.register_blueprint(auth_bp, url_prefix="/api/auth")
 
-        formatted = [
-            {
-                "text": r.get("text"),
-                "score": round(r.get("score", 0), 3),
-                "source": r.get("source"),
-                "url": r.get("url", None)
-            }
-            for r in results
-        ]
-
-        return jsonify({"results": formatted}), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()  # Crée les tables si elles n'existent pas
     app.run(debug=True)
