@@ -3,7 +3,7 @@ export async function searchQuery(query) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-    },
+    }, 
     body: JSON.stringify({ query }),
   });
 
@@ -14,7 +14,8 @@ export async function searchQuery(query) {
   return await response.json();
 }
 
-export async function getHistory(token) {
+export async function getHistory() {
+  const token = localStorage.getItem("token");
   const response = await fetch('http://localhost:5000/api/history', {
     headers: {
       'Authorization': `Bearer ${token}`,

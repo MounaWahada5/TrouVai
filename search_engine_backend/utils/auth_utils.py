@@ -1,7 +1,7 @@
 import jwt
 from functools import wraps
 from flask import request, jsonify
-from models.user_model import User  # à créer si pas encore fait
+from models.user_model import User  
 from config import SECRET_KEY
 
 def token_required(f):

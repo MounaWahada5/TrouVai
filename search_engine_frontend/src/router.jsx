@@ -1,4 +1,3 @@
-// src/router.jsx
 import React from "react";
 import {
   createBrowserRouter,
@@ -6,6 +5,8 @@ import {
 } from "react-router-dom";
 
 import App from "./App";
+
+// Pages
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import LoginPage from "./pages/LoginPage";
@@ -13,6 +14,8 @@ import RegisterPage from "./pages/RegisterPage";
 import HistoryPage from "./pages/HistoryPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import AboutPage from "./pages/AboutPage";
+
+// Protected route 
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -20,10 +23,22 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: "search", element: <SearchPage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "register", element: <RegisterPage /> },
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "search",
+        element: <SearchPage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
       {
         path: "history",
         element: (
@@ -40,7 +55,10 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: "about", element: <AboutPage /> },
+      {
+        path: "about",
+        element: <AboutPage />,
+      },
     ],
   },
 ]);

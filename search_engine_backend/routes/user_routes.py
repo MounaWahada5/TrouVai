@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db
+from extensions import db
 from models.history_model import History
 from models.favorite_model import Favorite
 from utils.auth_utils import token_required

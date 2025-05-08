@@ -1,9 +1,7 @@
-# backend/services/squad_search.py
-
-from sentence_transformers import SentenceTransformer  # type: ignore
-from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
-import numpy as np  # type: ignore
-from utils.embeddings_loader import load_embeddings  # type: ignore
+from sentence_transformers import SentenceTransformer  
+from sklearn.metrics.pairwise import cosine_similarity  
+import numpy as np  
+from utils.embeddings_loader import load_embeddings 
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
 

@@ -6,12 +6,7 @@ import datetime
 from config import SECRET_KEY
 
 auth_bp = Blueprint('auth', __name__)
-# ... (code d'inscription/connexion comme donné plus haut)
 
-
-auth_bp = Blueprint('auth', __name__)
-
-# Enregistrement
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()

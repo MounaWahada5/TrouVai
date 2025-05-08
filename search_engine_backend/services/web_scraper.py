@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup # type: ignore
+from bs4 import BeautifulSoup 
 
 def scrape_web(query, max_results=5):
     url = "https://lite.duckduckgo.com/lite/"
