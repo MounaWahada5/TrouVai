@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white;
+@layer base {
+  html { @apply scroll-smooth; }
+  body {
+    @apply font-sans antialiased;
+    @apply bg-gray-100 text-gray-900; 
+    @apply dark:bg-slate-900 dark:text-gray-100; 
+    @apply transition-colors duration-300 ease-in-out;
+  }
 }
 
-input {
-  @apply px-4 py-2 border rounded-md w-full;
-}
+
+
