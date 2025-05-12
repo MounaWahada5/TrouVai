@@ -4,6 +4,7 @@ from extensions import db, bcrypt
 from routes.search_routes import search_bp
 from routes.auth_routes import auth_bp
 from routes.user_routes import user_bp
+from routes.feedback_routes import feedback_bp
 from flask_migrate import Migrate  # Import Migrate
 
 app = Flask(__name__)
@@ -32,6 +33,7 @@ migrate = Migrate(app, db)  # Initialize Migrate
 app.register_blueprint(search_bp, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(user_bp, url_prefix="/api")
+app.register_blueprint(feedback_bp, url_prefix="/api/feedback")
 
 
 

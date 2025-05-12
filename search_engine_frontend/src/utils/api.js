@@ -121,3 +121,18 @@ export function logoutUser() {
   localStorage.removeItem("token");
   window.location.href = "/login";
 }
+// Feedback function
+export async function sendFeedback(message) {
+  const token = localStorage.getItem("token");
+  const response = await fetch('/api/feedback', {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+    credentials: 'include',
+  });
+  
+  return handleResponse(response);
+}

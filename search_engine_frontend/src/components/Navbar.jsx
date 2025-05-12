@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, UserCircle, Search as SearchIconNav, Home, Info, Menu, X } from 'lucide-react'; // Moon et Sun supprimés
-
+import { Link } from 'react-router-dom';
 export default function Navbar() {
 
   const [userData, setUserData] = useState(null);
@@ -76,6 +76,9 @@ export default function Navbar() {
               TrouVài
             </span>
           </NavLink>
+          <Link to="/feedback" className="text-sm font-medium hover:underline">
+  Donner un avis
+</Link>
 
           <div className="hidden md:flex items-center">
             {renderNavLinks()}
