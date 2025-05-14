@@ -1,34 +1,69 @@
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
-
 from .squad_search import search_squad
 from .web_scraper import scrape_web
-from utils.embeddings_loader import load_embeddings
+from .llm_answer import generate_answer_with_llm
 
+# Chargement du modèle d'embedding
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-def hybrid_search(query, top_k=10):
-    # Résultats SQuAD 
+# Un dictionnaire en mémoire pour stocker l’historique par utilisateur (temporaire)
+chat_memory = {}
+
+def hybrid_search(query, user_id=None, top_k=5):
+    """
+    Recherche hybride + mémoire de conversation par user_id.
+    """
     squad_results = search_squad(query)
+    web_results = scrape_web(query)
+
+    # Marquage des sources
     for r in squad_results:
         r["source"] = "squad"
+        r["score"] = 1.0
+    for r in web_results:
+        r["source"] = "web"
 
-    # Résultats Web scraping 
-    web_results = scrape_web(query)
-    web_texts = [r["text"] for r in web_results]
+    all_results = squad_results + web_results
+    if not all_results:
+        return {
+            "answer": "Aucun document trouvé pour répondre à cette question.",
+            "sources": []
+        }
 
-    if web_texts:
-        web_embeddings = model.encode(web_texts)
-        query_embedding = model.encode([query])
-        similarities = cosine_similarity(query_embedding, web_embeddings)[0]
+    texts = [doc["text"] for doc in all_results]
+    query_embedding = model.encode([query])
+    doc_embeddings = model.encode(texts)
+    similarities = cosine_similarity(query_embedding, doc_embeddings)[0]
 
-        for i, r in enumerate(web_results):
-            r["score"] = float(similarities[i])
-            r["source"] = "web"
+    for i, doc in enumerate(all_results):
+        doc["score"] = float(similarities[i])
 
-    combined = squad_results + web_results
+    sorted_docs = sorted(all_results, key=lambda x: x["score"], reverse=True)[:top_k]
 
-    combined_sorted = sorted(combined, key=lambda x: x["score"], reverse=True)
+    # Récupérer l'historique de ce user
+    history = chat_memory.get(user_id, []) if user_id else []
 
-    return combined_sorted[:top_k]
+    # Génération de la réponse avec historique
+    answer = generate_answer_with_llm(sorted_docs, query, history=history)
+
+    # Mise à jour de l'historique
+    if user_id:
+        chat_memory.setdefault(user_id, []).append({
+            "user": query,
+            "bot": answer
+        })
+
+    # Extraction des sources
+    sources = []
+    for doc in sorted_docs:
+        url = doc.get("url")
+        if url and url not in sources:
+            sources.append(url)
+        if len(sources) >= 4:
+            break
+
+    return {
+        "answer": answer,
+        "sources": sources
+    }
