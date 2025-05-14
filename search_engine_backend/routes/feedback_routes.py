@@ -30,3 +30,18 @@ def get_feedback(current_user):
             for f in feedbacks
         ]
     })
+@feedback_bp.route("/<int:feedback_id>", methods=["DELETE"])
+@token_required
+def delete_feedback(current_user, feedback_id):
+    feedback = Feedback.query.get(feedback_id)
+
+    if not feedback:
+        return jsonify({"error": "Feedback introuvable"}), 404
+
+    if feedback.user_id != current_user.id:
+        return jsonify({"error": "Non autorisé à supprimer ce feedback"}), 403
+
+    db.session.delete(feedback)
+    db.session.commit()
+
+    return jsonify({"message": "Feedback supprimé avec succès"}), 200
