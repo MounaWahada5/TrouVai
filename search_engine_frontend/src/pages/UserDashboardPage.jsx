@@ -1,7 +1,5 @@
-// src/pages/UserDashboardPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Importation des icônes depuis lucide-react
 import { Search, History as HistoryIcon, Heart, UserCircle, LogOut } from 'lucide-react';
 
 const UserDashboardPage = () => {
@@ -15,35 +13,32 @@ const UserDashboardPage = () => {
         setUser(JSON.parse(userDataString));
       } catch (error) {
         console.error("Erreur lors du parsing des données utilisateur depuis localStorage:", error);
-        localStorage.removeItem('user'); // Nettoyer les données corrompues
-        localStorage.removeItem('token'); // Supposer que le token est aussi invalide
-        navigate('/login'); // Rediriger vers la connexion
+        localStorage.removeItem('user'); 
+        localStorage.removeItem('token'); 
+        navigate('/login'); 
       }
     } else {
-      // Si ProtectedRoute est bien configuré, cette situation (pas de userDataString)
-      // ne devrait pas arriver car l'utilisateur serait redirigé avant d'atteindre cette page.
-      // Mais par sécurité :
+      
       console.warn("Aucune donnée utilisateur trouvée dans localStorage sur le dashboard. Vérifiez ProtectedRoute.");
-      // navigate('/login'); // Optionnel: rediriger agressivement si ProtectedRoute a un souci
+      
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    // Idéalement, informez un contexte global d'authentification ici si vous en utilisez un
+    
     navigate('/login');
-    // Forcer un rechargement peut aider si des états globaux ne se mettent pas à jour via le contexte
-    // window.location.reload(); 
+     
   };
 
-  // Composant interne pour les cartes de fonctionnalités, stylisé
+  
   const DashboardFeatureCard = ({ title, description, icon: IconComponent, path, gradientClasses }) => (
     <div
       onClick={() => navigate(path)}
       className={`cursor-pointer p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out ${gradientClasses} text-white flex flex-col items-center text-center`}
     >
-      <IconComponent className={`w-12 h-12 mb-4`} /> {/* Taille d'icône cohérente */}
+      <IconComponent className={`w-12 h-12 mb-4`} /> 
       <h3 className={`text-xl font-semibold mb-2`}>
         {title}
       </h3>
@@ -53,22 +48,22 @@ const UserDashboardPage = () => {
     </div>
   );
 
-  // Affichage pendant que les données utilisateur sont chargées ou si elles sont manquantes
+  
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <p className="text-gray-600 dark:text-gray-400 text-lg">Chargement des informations utilisateur...</p>
-        {/* Vous pourriez ajouter un spinner ici */}
+        
       </div>
     );
   }
 
   return (
-    // Fond de page cohérent (géré par index.css et la classe 'dark' sur <html>)
-    <div className="min-h-screen py-8 px-4 pt-12 sm:pt-16"> {/* pt pour la navbar fixe */}
+    
+    <div className="min-h-screen py-8 px-4 pt-12 sm:pt-16"> 
       <div className="max-w-5xl mx-auto">
         
-        {/* Section de bienvenue utilisateur */}
+      
         <div className="bg-white dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-xl mb-10 text-center border border-gray-200 dark:border-gray-700/80">
           <UserCircle className="text-7xl text-blue-500 dark:text-blue-400 mx-auto mb-4" />
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-2">
@@ -85,7 +80,7 @@ const UserDashboardPage = () => {
           </button>
         </div>
 
-        {/* Grille des fonctionnalités */}
+      
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           <DashboardFeatureCard
             title="Nouvelle Recherche"
@@ -105,7 +100,7 @@ const UserDashboardPage = () => {
             title="Mes Favoris"
             description="Accédez à vos résultats et articles sauvegardés."
             icon={Heart} 
-            path="/favorites" // Assurez-vous que cette route est définie et protégée
+            path="/favorites" 
             gradientClasses="bg-gradient-to-br from-pink-500 via-red-500 to-orange-500 hover:from-pink-600 hover:via-red-600 hover:to-orange-600"
           />
         </div>

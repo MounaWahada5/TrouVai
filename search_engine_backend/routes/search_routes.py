@@ -1,4 +1,3 @@
-# routes/search_routes.py
 from flask import Blueprint, request, jsonify, current_app
 from services.search_service import hybrid_search
 from models.history_model import History

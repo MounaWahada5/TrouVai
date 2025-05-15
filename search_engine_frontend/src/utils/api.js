@@ -1,4 +1,3 @@
-// utils/api.js
 async function handleResponse(response) {
   if (response.status === 401) {
     localStorage.removeItem("token");
@@ -133,6 +132,29 @@ export async function sendFeedback(message) {
     body: JSON.stringify({ message }),
     credentials: 'include',
   });
-  
+
+  return handleResponse(response);
+}
+// sraping function
+export async function scrapeQuery(query) {
+  const response = await fetch(`/api/scrape`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ query }),
+  });
+  return handleResponse(response);
+}
+// chat function
+export async function chatQuery(query, userId) {
+  const response = await fetch('/api/chat', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ query, user_id: userId })
+  });
+
   return handleResponse(response);
 }

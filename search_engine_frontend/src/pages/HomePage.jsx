@@ -1,4 +1,3 @@
-// src/pages/HomePage.jsx
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { Search, Info, ArrowRight, Zap, Brain } from 'lucide-react';
@@ -35,7 +34,7 @@ const HomePage = () => {
           style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M30 0c16.568 0 30 13.432 30 30S46.568 60 30 60C13.432 60 0 46.568 0 30S13.432 0 30 0zm0 2c15.464 0 28 12.536 28 28s-12.536 28-28 28S2 45.464 2 30 12.536 2 30 2zm0 12c8.837 0 16 7.163 16 16s-7.163 16-16 16-16-7.163-16-16 7.163-16 16-16zm0 2c7.732 0 14 6.268 14 14s-6.268 14-14 14-14-6.268-14-14 6.268-14 14-14z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }}
         />
         
-        <div className="relative z-0 bg-white/80 backdrop-blur-xl p-6 sm:p-10 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-3xl border border-gray-200/60"> {/* Suppression des classes dark: */}
+        <div className="relative z-0 bg-white/80 backdrop-blur-xl p-6 sm:p-10 md:p-12 rounded-[2.5rem] shadow-2xl w-full max-w-3xl border border-gray-200/60"> 
           <div className="flex flex-col items-center">
             <div className="flex items-center mb-5 sm:mb-6">
               <Zap size={40} className="text-yellow-500 mr-2 sm:mr-3 transform -rotate-12" />
@@ -52,7 +51,7 @@ const HomePage = () => {
               🚀 Bienvenue dans une nouvelle ère de recherche 🤖 <br className="hidden sm:block"/>
             </p>
 
-            <form onSubmit={handleDirectSearch} className="w-full max-w-xl flex flex-col sm:flex-row items-center gap-2.5 mx-auto bg-white/60 p-1.5 rounded-full shadow-lg border border-gray-300/50"> {/* Suppression des classes dark: */}
+            <form onSubmit={handleDirectSearch} className="w-full max-w-xl flex flex-col sm:flex-row items-center gap-2.5 mx-auto bg-white/60 p-1.5 rounded-full shadow-lg border border-gray-300/50"> 
               <input
                 type="search"
                 value={searchQuery}
@@ -72,7 +71,7 @@ const HomePage = () => {
                            flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-blue-300/70"
                 aria-label="Lancer la recherche"
               >
-                Rechercher <ArrowRight size={18} className="ml-1.5" />
+                Rechercher <ArrowRight size={20} className="ml-1.5" />
               </button>
             </form>
             

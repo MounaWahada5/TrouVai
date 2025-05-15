@@ -1,4 +1,3 @@
-# routes/scraping_routes.py
 from flask import Blueprint, request, jsonify
 from services.web_scraper import scrape_web
 

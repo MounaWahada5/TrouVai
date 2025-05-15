@@ -6,9 +6,9 @@ from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
 # Configuration des chemins
-BASE_DIR = os.path.dirname(os.path.abspath(__file__)) # Chemin du script
-MAIN_DIR = os.path.abspath(os.path.join(BASE_DIR, "..")) # Remonte d'un niveau seulement
-DATA_DIR = os.path.join(MAIN_DIR, "data") # Maintenant dans Smart-Search-Engine--main/data
+BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
+MAIN_DIR = os.path.abspath(os.path.join(BASE_DIR, "..")) 
+DATA_DIR = os.path.join(MAIN_DIR, "data") 
 INDEX_DIR = os.path.join(MAIN_DIR, "index")
 
 CSV_PATH = os.path.join(DATA_DIR, "squad_train.csv")
