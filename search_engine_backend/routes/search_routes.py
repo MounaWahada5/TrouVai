@@ -54,8 +54,11 @@ def search():
                 current_app.logger.error(traceback.format_exc())
 
         try:
-            result = hybrid_search(query)
-            final_result = {"answer": result["answer"]}
+            result = hybrid_search(query, user_id=current_user.id if current_user else None)
+            final_result = {
+                "answer": result["answer"],
+                "sources": result.get("sources", [])
+            }
         except Exception as search_error:
             current_app.logger.error("Erreur dans hybrid_search: %s", str(search_error))
             current_app.logger.error(traceback.format_exc())
