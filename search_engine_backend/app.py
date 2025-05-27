@@ -12,7 +12,7 @@ from flask_migrate import Migrate  # Import Migrate
 app = Flask(__name__)
 CORS(app, resources={
     r"/api/*": {
-        "origins": "http://localhost:5173",
+        "origins": "http://localhost:8501",
         "supports_credentials": True,
         "allow_headers": ["Authorization", "Content-Type"]
     }

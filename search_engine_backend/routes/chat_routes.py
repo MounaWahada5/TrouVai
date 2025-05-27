@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from services.search_service import hybrid_search
+from utils.message_filter import analyze_message  # ✅ remplacer par la nouvelle fonction
 import re
 
 chat_bp = Blueprint("chat", __name__)
@@ -8,13 +9,9 @@ def format_answer_for_readability(text):
     """
     Structure proprement la réponse du LLM pour une meilleure lisibilité.
     """
-    # Nettoyage des retours à la ligne mal formatés
     text = text.replace("\\n", "\n").replace("\r", "").strip()
-
-    # Espacement après les introductions
     text = re.sub(r"(Je comprends mieux.*?exemples :) *\n*", r"\1\n\n", text, flags=re.IGNORECASE)
 
-    # Convertir les puces (*) en liste numérotée
     lines = text.splitlines()
     numbered = []
     count = 1
@@ -29,7 +26,6 @@ def format_answer_for_readability(text):
 
     text = "\n".join(numbered)
 
-    # Ajouter un titre si la phrase clé est détectée
     text = re.sub(
         r"^Je comprends mieux.*?Voici quelques-uns des exemples :",
         "📊 **Taux de chômage les plus bas dans certains pays :**",
@@ -37,16 +33,12 @@ def format_answer_for_readability(text):
         flags=re.IGNORECASE
     )
 
-    # Phrase de clôture conviviale
-    if "💬" not in text:
-        text += "\n\n💬 Si vous souhaitez aussi connaître les pays avec les taux les plus élevés ou d'autres informations liées à l'emploi, n’hésitez pas à demander !"
-
     return text.strip()
 
 @chat_bp.route('/chat', methods=['POST', 'OPTIONS'])
 def chat():
     if request.method == 'OPTIONS':
-        return jsonify({}), 200  # Réponse CORS
+        return jsonify({}), 200
 
     try:
         data = request.get_json()
@@ -63,11 +55,27 @@ def chat():
 
         current_app.logger.info(f"[Chat] Query: {query} | User ID: {user_id}")
 
-        # Recherche hybride (web + réponse intelligente)
-        result = hybrid_search(query=query, user_id=user_id)
+        # ✅ Analyser le message
+        analysis = analyze_message(query)
 
-        # Mise en forme claire de la réponse
+        greeting = analysis.get("greeting")
+        is_technical = analysis.get("is_technical")
+
+        if not is_technical:
+            # Répondre poliment même si ce n'est pas technique
+            polite_response = greeting if greeting else "Salut ! Je suis là pour répondre à tes questions 🤗"
+            return jsonify({
+                "answer": polite_response + "\n\nPose-moi une question si tu veux que je t’aide davantage ! 😊",
+                "sources": []
+            }), 200
+
+        # ✅ Traitement technique via LLM + Web
+        result = hybrid_search(query=query, user_id=user_id)
         formatted_answer = format_answer_for_readability(result["answer"])
+
+        # Ajouter un mot de salutation si présent
+        if greeting:
+            formatted_answer = f"{greeting} ! 😊\n\n{formatted_answer}"
 
         final_result = {
             "answer": formatted_answer,

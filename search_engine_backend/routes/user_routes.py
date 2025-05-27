@@ -7,9 +7,21 @@ from sqlalchemy import select, delete
 
 user_bp = Blueprint("user", __name__)
 
-@user_bp.route('/history', methods=['GET'])
+@user_bp.route('/history', methods=['GET', 'POST'])
 @token_required
-def get_history(current_user):
+def handle_history(current_user):
+    if request.method == 'POST':
+        data = request.get_json()
+        query = data.get('query')
+        
+        if not query:
+            return jsonify({"error": "Le champ 'query' est requis"}), 400
+        
+        new_history = History(user_id=current_user.id, query=query)
+        db.session.add(new_history)
+        db.session.commit()
+        return jsonify({"message": "Historique ajouté avec succès", "query": query, "timestamp": new_history.created_at}), 201
+
     stmt = select(History).where(History.user_id == current_user.id).order_by(History.created_at.desc())
     history = db.session.scalars(stmt).all()
     return jsonify({"history": [{"query": h.query, "timestamp": h.created_at} for h in history]})

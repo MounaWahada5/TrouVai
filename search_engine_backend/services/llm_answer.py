@@ -1,9 +1,6 @@
 import requests
 
 def generate_answer_with_llm(contexts, query, history=None):
-    """
-    Génére une réponse naturelle et intelligente en comprenant le sens, même avec des fautes ou des formulations vagues.
-    """
     prompt = (
         "Tu es un assistant intelligent, amical, et très performant. "
         "Tu comprends parfaitement les fautes d'orthographe, de grammaire, les abréviations, et même les questions mal formulées. "
@@ -32,11 +29,11 @@ def generate_answer_with_llm(contexts, query, history=None):
         response = requests.post(
             "http://localhost:11434/api/generate",
             json={
-                "model": "llama3:8b",  
+                "model": "gemma",
                 "prompt": prompt,
                 "stream": False
             },
-            timeout=30
+            timeout=60
         )
         response.raise_for_status()
         return response.json().get("response", "").strip()
