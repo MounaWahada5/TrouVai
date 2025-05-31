@@ -1,38 +1,24 @@
-from flask import Blueprint, request, jsonify
-from extensions import db
-from models.history_model import History
 from datetime import datetime
+from extensions import db
+import json
 
-history_bp = Blueprint('history', __name__)
+class History(db.Model):
+    __tablename__ = 'history'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    query = db.Column(db.String(500), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    conversation = db.relationship('Conversation', backref='history', uselist=False)  # One-to-one relationship
 
-@history_bp.route('/history/<int:user_id>', methods=['GET'])
-def get_user_history(user_id):
-    history_items = History.query.filter_by(user_id=user_id).order_by(History.created_at.desc()).all()
-    return jsonify([
-        {
-            "id": item.id,
-            "query": item.query,
-            "result_url": item.result_url,
-            "created_at": item.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        }
-        for item in history_items
-    ])
+    def __repr__(self):
+        return f'<History {self.query}>'
 
-@history_bp.route('/history/<int:history_id>', methods=['PUT'])
-def update_history(history_id):
-    data = request.get_json()
-    new_query = data.get("query")
+class Conversation(db.Model):
+    __tablename__ = 'conversation'
+    id = db.Column(db.Integer, primary_key=True)
+    history_id = db.Column(db.Integer, db.ForeignKey('history.id'), nullable=False)
+    messages = db.Column(db.Text, nullable=False)  # Store messages as JSON string
+    sources = db.Column(db.Text, nullable=True)   # Store sources as JSON string
 
-    history_item = History.query.get_or_404(history_id)
-    history_item.query = new_query
-    db.session.commit()
-
-    return jsonify({"message": "History item updated"})
-
-@history_bp.route('/history/<int:history_id>', methods=['DELETE'])
-def delete_history(history_id):
-    history_item = History.query.get_or_404(history_id)
-    db.session.delete(history_item)
-    db.session.commit()
-
-    return jsonify({"message": "History item deleted"})
+    def __repr__(self):
+        return f'<Conversation for History {self.history_id}>'

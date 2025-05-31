@@ -8,23 +8,19 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const data = await apiFetch("/auth/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
-      console.log("Login Response:", data); // Log the login response to verify username
+      console.log("Login Response:", data);
       setToken(data.token);
-      localStorage.setItem("user_id", data.user.id);
-      localStorage.setItem("username", data.user.username); // Store username
-      console.log("Stored User Data in localStorage:", {
-        userId: data.user.id,
-        username: data.user.username,
-      });
+      localStorage.setItem("user_id", data.user.id.toString()); // Fixed: data.user.id
+      localStorage.setItem("username", data.user.username); // Fixed: data.user.username
       navigate("/chat");
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || "Email ou mot de passe incorrect");
     }
   };

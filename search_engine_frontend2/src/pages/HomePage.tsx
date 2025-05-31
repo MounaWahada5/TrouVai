@@ -24,6 +24,8 @@ export default function HomePage() {
                 
                 <button className="p-2 rounded-full hover:bg-gray-200">Think</button>
                 <select className="p-2 rounded-full bg-gray-50 border-none outline-none">
+                  <option>ChatChout 1</option>
+                  <option>ChatChout 2</option>
                   <option>ChatChout 3</option>
                 </select>
                 <button className="p-2 rounded-full hover:bg-gray-200">

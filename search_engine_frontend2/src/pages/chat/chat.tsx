@@ -14,8 +14,11 @@ export function Chat() {
   const [question, setQuestion] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resources, setResources] = useState<{ title: string; url?: string }[]>([]);
-  const [history, setHistory] = useState<{ query: string; timestamp: string }[]>([]);
-  const [username, setUsername] = useState<string>(localStorage.getItem("username") || "User"); // Ensure string type
+  const [history, setHistory] = useState<
+    { id: number; search_query: string; conversation: { messages: message[]; sources: string[] }; timestamp: string }[]
+  >([]);
+  const [username, setUsername] = useState<string>(localStorage.getItem("username") || "User");
+  const [historyError, setHistoryError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,9 +27,10 @@ export function Chat() {
         const data = await apiFetch("/history", { method: "GET" });
         console.log("Fetched History Data:", data);
         setHistory(data.history || []);
-        console.log("Updated History State:", data.history || []);
+        setHistoryError(null);
       } catch (error) {
         console.error("Failed to fetch history:", error);
+        setHistoryError(error.message || "Failed to load history");
       }
     };
     fetchHistory();
@@ -47,36 +51,31 @@ export function Chat() {
     }
   }, []);
 
-  useEffect(() => {
-    if (messages.length === 1) {
-      const firstQuery = messages[0].content;
-      console.log("Adding first query to history:", firstQuery);
-      apiFetch("/history", {
-        method: "POST",
-        body: JSON.stringify({ query: firstQuery }),
-      }).then((response) => {
-        console.log("History POST Response:", response);
-        fetchHistory();
-      }).catch((error) => console.error("History update error:", error));
-    }
-    console.log("Current Messages State:", messages);
-    console.log("Current User Data:", {
-      userId: localStorage.getItem("user_id"),
-      username,
-    });
-  }, [messages]);
-
   async function handleSubmit(text?: string) {
     if (isLoading) return;
 
     const messageText = text || question;
-    const userId = localStorage.getItem("user_id");
-    if (!userId) {
-      console.error("No user_id found in localStorage. Please log in.");
+    const userIdRaw = localStorage.getItem("user_id");
+    
+    // Validate userId
+    if (!userIdRaw) {
+      console.error("No user_id found in localStorage. Redirecting to login.");
       setMessages((prev) => [
         ...prev,
         { content: "Erreur: Veuillez vous connecter.", role: "assistant", id: Date.now().toString() },
       ]);
+      navigate("/login");
+      return;
+    }
+
+    const userId = parseInt(userIdRaw, 10);
+    if (isNaN(userId)) {
+      console.error("Invalid user_id in localStorage:", userIdRaw);
+      setMessages((prev) => [
+        ...prev,
+        { content: "Erreur: ID utilisateur invalide. Veuillez vous reconnecter.", role: "assistant", id: Date.now().toString() },
+      ]);
+      navigate("/login");
       return;
     }
 
@@ -95,7 +94,7 @@ export function Chat() {
     try {
       const data = await apiFetch("/chat", {
         method: "POST",
-        body: JSON.stringify({ query: messageText, user_id: userId }),
+        body: JSON.stringify({ query: messageText, user_id: userId, messages: [] }),
       });
       console.log("Chat API Response:", data);
       setMessages((prev) => [
@@ -105,12 +104,15 @@ export function Chat() {
       const formattedResources = (data.sources || []).map((source) => ({ title: source, url: source }));
       console.log("Formatted Resources:", formattedResources);
       setResources(formattedResources);
-      console.log("Updated Resources State:", formattedResources);
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error("Chat error details:", {
+        message: error.message,
+        stack: error.stack,
+        status: (error as any).status,
+      });
       setMessages((prev) => [
         ...prev,
-        { content: `Erreur: ${error.message}`, role: "assistant", id: Date.now().toString() },
+        { content: `Erreur: ${error.message || "Une erreur interne est survenue."}`, role: "assistant", id: Date.now().toString() },
       ]);
     } finally {
       setIsLoading(false);
@@ -130,9 +132,21 @@ export function Chat() {
     navigate("/");
   };
 
+  const restoreConversation = (historyItem) => {
+    setMessages(historyItem.conversation.messages);
+    setResources(historyItem.conversation.sources.map((source) => ({ title: source, url: source })));
+    setQuestion("");
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setResources([]);
+    setQuestion("");
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-row min-w-0 h-dvh bg-background">
-      {/* Left Sidebar for History */}
       <Sidebar
         isOpen={true}
         toggleSidebar={() => {}}
@@ -141,8 +155,9 @@ export function Chat() {
         resources={[]}
         username={username}
         onLogout={handleLogout}
+        onHistoryClick={restoreConversation}
+        onNewChat={handleNewChat}
       />
-      {/* Main Chat Area */}
       <div className="flex flex-col min-w-0 flex-1">
         <div className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4" ref={messagesContainerRef}>
           {messages.length === 0 && <Overview />}
@@ -150,6 +165,7 @@ export function Chat() {
             <PreviewMessage key={index} message={message} />
           ))}
           {isLoading && <ThinkingMessage />}
+          {historyError && <div className="text-red-500 p-4">History Error: {historyError}</div>}
           <div ref={messagesEndRef} className="shrink-0 min-w-[24px] min-h-[24px]" />
         </div>
         <div className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
@@ -161,7 +177,6 @@ export function Chat() {
           />
         </div>
       </div>
-      {/* Right Sidebar for Resources/Sources */}
       <Sidebar
         isOpen={true}
         toggleSidebar={() => {}}
@@ -170,6 +185,8 @@ export function Chat() {
         history={[]}
         username={username}
         onLogout={handleLogout}
+        onHistoryClick={restoreConversation}
+        onNewChat={handleNewChat}
       />
     </div>
   );

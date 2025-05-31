@@ -15,10 +15,13 @@ export default function Sidebar({
   history: initialHistory,
   username,
   onLogout,
+  onHistoryClick,
+  onNewChat,
 }) {
   const [expanded, setExpanded] = useState(isOpen);
   const [menuOpen, setMenuOpen] = useState(false);
   const [history, setHistory] = useState(initialHistory || []);
+  const [historyError, setHistoryError] = useState(null);
 
   useEffect(() => {
     console.log("Sidebar Initial History Prop:", initialHistory);
@@ -27,9 +30,14 @@ export default function Sidebar({
         const data = await apiFetch("/history", { method: "GET" });
         console.log("Sidebar Fetched History Data:", data);
         setHistory(data.history || []);
-        console.log("Sidebar Updated History State:", data.history || []);
+        setHistoryError(null);
       } catch (error) {
         console.error("History fetch error:", error);
+        setHistoryError(error.message);
+        if (error.message.includes("Session expired") || error.message.includes("401")) {
+          console.log("Attempting token refresh...");
+          // Implement token refresh logic here if needed
+        }
       }
     };
     fetchHistory();
@@ -48,10 +56,6 @@ export default function Sidebar({
     setMenuOpen(!menuOpen);
   };
 
-  const handleNewChat = () => {
-    window.location.reload(); // Refresh the page to start a new chat
-  };
-
   return (
     <aside
       className={`h-screen transition-all duration-300 ${
@@ -59,7 +63,7 @@ export default function Sidebar({
           ? position === "right"
             ? "w-64"
             : "w-60"
-          : "w-12" // Collapsed width (just enough for the toggle button)
+          : "w-12"
       }`}
     >
       <nav className="h-full flex flex-col bg-zinc-50 border-zinc-300 shadow-sm">
@@ -78,7 +82,7 @@ export default function Sidebar({
               <>
                 <li className="flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer hover:bg-indigo-50 text-gray-600">
                   <button
-                    onClick={handleNewChat}
+                    onClick={onNewChat}
                     className={`w-full flex items-center justify-center bg-blue-100 text-blue-600 rounded-lg px-4 py-2 transition-all ${
                       expanded ? "opacity-100" : "opacity-0 w-0 h-0"
                     }`}
@@ -100,9 +104,24 @@ export default function Sidebar({
                     {expanded && "New chat"}
                   </button>
                 </li>
+                {expanded && historyError && (
+                  <li className="py-2 px-3 my-1 text-red-500">
+                    Failed to load history: {historyError}
+                  </li>
+                )}
+                {expanded && !historyError && history.length === 0 && (
+                  <li className="py-2 px-3 my-1 text-gray-500">
+                    No history available.
+                  </li>
+                )}
                 {expanded &&
+                  !historyError &&
                   history.map((item, index) => (
-                    <HistoryItem key={index} item={item} />
+                    <HistoryItem
+                      key={index}
+                      item={item}
+                      onClick={() => onHistoryClick(item)}
+                    />
                   ))}
                 <li className="flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer hover:bg-indigo-50 text-gray-600 mt-auto relative">
                   <div
