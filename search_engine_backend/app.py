@@ -4,7 +4,6 @@ from extensions import db, bcrypt
 from routes.search_routes import search_bp
 from routes.auth_routes import auth_bp
 from routes.user_routes import user_bp
-from routes.feedback_routes import feedback_bp
 from routes.scraping_routes import scraping_bp
 from routes.chat_routes import chat_bp
 from flask_migrate import Migrate  # Import Migrate
@@ -58,7 +57,6 @@ migrate = Migrate(app, db)  # Initialize Migrate
 app.register_blueprint(search_bp, url_prefix="/api")
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(user_bp, url_prefix="/api")
-app.register_blueprint(feedback_bp, url_prefix="/api/feedback")
 app.register_blueprint(scraping_bp, url_prefix="/api")
 app.register_blueprint(chat_bp, url_prefix="/api")
 

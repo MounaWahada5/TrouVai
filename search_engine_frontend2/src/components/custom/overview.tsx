@@ -19,7 +19,7 @@ export const Overview = () => {
           <MessageCircle size={44}/>
         </p>
         <p>
-          Welcome to <strong>chatchout</strong><br />
+          Welcome to <strong>TacticFind</strong><br />
           a open source Smart Search Engine<br />
           <strong>Mouna Wahada</strong>.
         </p>

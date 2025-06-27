@@ -76,9 +76,6 @@ export default function Navbar() {
               TrouVài
             </span>
           </NavLink>
-          <Link to="/feedback" className="text-sm font-medium hover:underline">
-  Donner un avis
-</Link>
 
           <div className="hidden md:flex items-center">
             {renderNavLinks()}

@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <div className="w-full h-[8ch] px-6 bg-gray-100 flex items-center justify-between border-b border-gray-200">
       <div className="flex items-center">
-        <span className="text-xl font-semibold text-gray-600">ChatChout</span>
+        <span className="text-xl font-semibold text-gray-600">TacticFind</span>
       </div>
 
       <div className="flex items-center gap-x-4">

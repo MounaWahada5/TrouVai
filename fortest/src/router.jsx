@@ -11,7 +11,6 @@ import UserDashboardPage from "./pages/UserDashboardPage";
 import ProtectedRoute from "./components/ProtectedRoute"; 
 import HistoryPage from "./pages/HistoryPage";
 import FavoritesPage from './pages/FavoritesPage';
-import FeedbackPage from './pages/FeedbackPage';
 import ChatPage from "./pages/ChatPage";
 
 const router = createBrowserRouter([
@@ -25,7 +24,6 @@ const router = createBrowserRouter([
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "about", element: <AboutPage /> },
-      { path: "feedback", element: <FeedbackPage /> },
       {
         path: "dashboard",
         element: (

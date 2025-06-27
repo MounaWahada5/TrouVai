@@ -1,6 +1,6 @@
-from langdetect import detect # type: ignore
-from unidecode import unidecode # type: ignore
-from fuzzywuzzy import fuzz # type: ignore
+from langdetect import detect 
+from unidecode import unidecode 
+from fuzzywuzzy import fuzz 
 import re
 
 SALUTATIONS = {

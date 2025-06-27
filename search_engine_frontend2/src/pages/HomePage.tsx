@@ -30,7 +30,7 @@ export default function HomePage() {
       <main className="flex-1 overflow-y-auto flex items-center justify-center">
         <div className="w-full max-w-2xl p-6 text-center">
           <h1 className="text-3xl font-semibold mb-6">
-            Welcome to ChatChout. How can I help you today?
+            Welcome to TacticFind. How can I help you today?
           </h1>
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="mb-6">
@@ -66,7 +66,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-sm mt-4">
-            By messaging ChatChout, you agree to our Terms and Privacy Policy.
+            By messaging TacticFind, you agree to our Terms and Privacy Policy.
           </p>
         </div>
       </main>
