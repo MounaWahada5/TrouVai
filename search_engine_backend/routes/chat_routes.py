@@ -45,10 +45,11 @@ def chat():
             return jsonify({"error": "Requête JSON manquante"}), 400
 
         query = data.get("query", "").strip()
+        domain = data.get("domain", "").strip()  # Get domain from request
         user_id = data.get("user_id")
         messages = data.get("messages", [])
         model = data.get("model", "mistral")
-        history_id = data.get("history_id")  # Get history_id from payload
+        history_id = data.get("history_id")
 
         auth_header = request.headers.get('Authorization')
         current_user = None
@@ -88,13 +89,14 @@ def chat():
             return jsonify({"error": "Erreur lors de l'analyse du message."}), 500
 
         try:
-            result = hybrid_search(query=query, user_id=user_id if current_user else None, model=model)
+            result = hybrid_search(query=query, user_id=user_id if current_user else None, model=model, domain=domain)
             formatted_answer = format_answer_for_readability(result["answer"])
             if greeting:
                 formatted_answer = f"{greeting} ! 😊\n\n{formatted_answer}"
             response = {
                 "answer": formatted_answer,
-                "sources": result.get("sources", [])
+                "sources": result.get("sources", []),
+                "detected_domain": result.get("detected_domain", domain)  # Include detected domain in response
             }
         except Exception as e:
             current_app.logger.error(f"Hybrid search failed: {str(e)}")
@@ -106,10 +108,9 @@ def chat():
                 is_new_chat = (
                     not latest_history or
                     datetime.utcnow() - latest_history.created_at > timedelta(minutes=5) or
-                    history_id is None  # Consider it a new chat if no history_id is provided
+                    history_id is None
                 )
 
-                # Prepare messages to save (include both user query and assistant response)
                 new_message = {"content": query, "role": "user", "id": str(datetime.utcnow().timestamp())}
                 assistant_message = {"content": formatted_answer, "role": "assistant", "id": str(datetime.utcnow().timestamp() + 0.1)}
                 updated_messages = messages + [new_message, assistant_message]

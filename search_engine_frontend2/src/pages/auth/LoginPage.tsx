@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch, setToken } from "../../utils/api";
+import robotImage from '../../assets/fonts/robot.png'; // Importation de l'image du robot
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -15,92 +16,83 @@ export default function LoginPage() {
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
-      console.log("Login Response:", data);
       setToken(data.token);
-      localStorage.setItem("user_id", data.user.id.toString()); // Fixed: data.user.id
-      localStorage.setItem("username", data.user.username); // Fixed: data.user.username
+      localStorage.setItem("user_id", data.user.id.toString());
+      localStorage.setItem("username", data.user.username);
       navigate("/chat");
     } catch (err: any) {
       setError(err.message || "Email ou mot de passe incorrect");
     }
   };
 
-  const goToHome = () => {
-    navigate("/");
-  };
-
   return (
-    <div className="flex flex-col min-w-0 h-dvh bg-background text-gray-600">
-      <main className="flex-1 overflow-y-auto flex items-center justify-center">
-        <div className="w-full max-w-md p-6">
-          <button
-            onClick={goToHome}
-            className="mb-6 flex items-center text-gray-600 hover:text-gray-800"
-          >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            Back to Home
-          </button>
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Sign In</h2>
-            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Sign In
-              </button>
-            </form>
-            <p className="mt-4 text-sm text-center">
-              Don't have an account?{" "}
-              <a
-                href="/signup"
-                className="text-blue-600 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/signup");
-                }}
-              >
-                Sign Up
-              </a>
-            </p>
+    // Conteneur principal avec le dégradé bleu de la HomePage
+    <div
+      className="min-h-screen flex items-center justify-center
+                 bg-gradient-to-br from-[#E0FFFF] to-[#ADD8E6] text-gray-800" // Fond bleu clair harmonisé
+    >
+      <div className="flex w-full max-w-7xl h-[80vh] bg-white rounded-3xl shadow-2xl overflow-hidden">
+        {/* Partie gauche : Image du robot */}
+        <div className="w-1/2 flex items-center justify-center p-8 bg-[#ADD8E6] relative"> {/* Couleur d'accentuation pour le fond de l'image */}
+          <img
+            src={robotImage}
+            alt="Robot Assistant"
+            className="max-h-full w-auto object-contain animate-float" // animate-float si défini dans votre CSS
+          />
+          {/* Petites bulles comme sur la HomePage */}
+          <div className="absolute top-1/4 left-1/4 bg-blue-400 text-white px-3 py-1 rounded-lg text-sm rotate-6 shadow-md">
+            Hello!
+          </div>
+          <div className="absolute top-1/3 right-1/4 bg-green-400 text-white px-3 py-1 rounded-lg text-sm -rotate-3 shadow-md">
+            How are you?
           </div>
         </div>
-      </main>
+
+        {/* Partie droite : Formulaire de connexion */}
+        <div className="w-1/2 p-12 flex flex-col justify-center bg-white">
+          <h2 className="text-4xl font-extrabold text-center text-[#2F4F4F] mb-8"> {/* Couleur du titre harmonisée */}
+            Welcome Back!
+          </h2>
+
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Bordure et focus ring bleus
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Bordure et focus ring bleus
+              required
+            />
+            <button
+              type="submit"
+              className="w-full py-4 bg-[#4682B4] text-white rounded-xl font-bold text-lg
+                         hover:bg-[#34658A] transition-all duration-300 transform hover:-translate-y-1 shadow-lg" // Bouton bleu harmonisé
+            >
+              Sign In
+            </button>
+          </form>
+
+          <p className="text-base text-center mt-8 text-gray-700">
+            Don’t have an account?{" "}
+            <button
+              onClick={() => navigate("/signup")}
+              className="text-[#4682B4] hover:underline font-semibold" // Lien bleu harmonisé
+            >
+              Sign Up
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

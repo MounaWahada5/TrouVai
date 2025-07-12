@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../utils/api";
+import robotImage from '../../assets/fonts/robot.png';
 
 export default function SignupPage() {
   const [username, setUsername] = useState("");
@@ -10,7 +11,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas");
@@ -22,96 +23,95 @@ export default function SignupPage() {
         body: JSON.stringify({ username, email, password }),
       });
       navigate("/login");
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || "Une erreur s'est produite lors de l'inscription");
     }
   };
 
-  const goToHome = () => {
-    navigate("/");
-  };
-
   return (
-    <div className="flex flex-col min-w-0 h-dvh bg-background text-gray-600">
-      <main className="flex-1 overflow-y-auto flex items-center justify-center">
-        <div className="w-full max-w-md p-6">
-          <button
-            onClick={goToHome}
-            className="mb-6 flex items-center text-gray-600 hover:text-gray-800"
-          >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            Back to Home
-          </button>
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Sign Up</h2>
-            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Username</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your username"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your password"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Confirm Password</label>
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Confirm your password"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Sign Up
-              </button>
-            </form>
+    // Conteneur principal avec le dégradé bleu de la HomePage (pour la cohérence globale)
+    <div
+      className="min-h-screen flex items-center justify-center
+                 bg-gradient-to-br from-[#E0FFFF] to-[#ADD8E6] text-gray-800"
+    >
+      <div className="flex w-full max-w-7xl h-[80vh] bg-white rounded-3xl shadow-2xl overflow-hidden">
+        {/* Partie gauche : Image du robot avec fond vert aqua/menthe */}
+        <div className="w-1/2 flex items-center justify-center p-8 bg-[#E0FFFF] relative"> {/* NOUVEAU: Fond vert aqua très clair pour la section image */}
+          <img
+            src={robotImage}
+            alt="Robot Assistant"
+            className="max-h-full w-auto object-contain animate-float"
+          />
+          {/* Les bulles de dialogue peuvent rester les mêmes ou être ajustées si vous voulez un vert/bleu plus doux */}
+          <div className="absolute top-1/4 left-1/4 bg-blue-400 text-white px-3 py-1 rounded-lg text-sm rotate-6 shadow-md">
+            Hello!
+          </div>
+          <div className="absolute top-1/3 right-1/4 bg-green-400 text-white px-3 py-1 rounded-lg text-sm -rotate-3 shadow-md">
+            How are you?
           </div>
         </div>
-      </main>
+
+        {/* Partie droite : Formulaire d'inscription */}
+        <div className="w-1/2 p-12 flex flex-col justify-center bg-white">
+          <h2 className="text-4xl font-extrabold text-center text-[#2F4F4F] mb-8">
+            hey ! Create Your Account
+          </h2>
+
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Reste bleu pour la cohérence des inputs
+              required
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Reste bleu pour la cohérence des inputs
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Reste bleu pour la cohérence des inputs
+              required
+            />
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-[#ADD8E6] transition-all duration-200" // Reste bleu pour la cohérence des inputs
+              required
+            />
+            <button
+              type="submit"
+              className="w-full py-4 bg-[#7FFFD4] text-[#2F4F4F] rounded-xl font-bold text-lg
+                         hover:bg-[#66CDAA] transition-all duration-300 transform hover:-translate-y-1 shadow-lg" // NOUVEAU: Bouton vert aqua avec texte sombre
+            >
+              Sign Up
+            </button>
+          </form>
+
+          <p className="text-base text-center mt-8 text-gray-700">
+            Already have an account?{" "}
+            <button
+              onClick={() => navigate("/login")}
+              className="text-[#7FFFD4] hover:underline font-semibold" // NOUVEAU: Lien vert aqua
+            >
+              Login
+            </button>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

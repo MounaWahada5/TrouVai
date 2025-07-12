@@ -14,13 +14,11 @@ def generate_answer_with_llm(contexts, query, history=None, model="llama2"):
         Generated response or error message.
     """
     prompt = (
-        "Tu es un assistant intelligent, amical, et très performant. "
-        "Tu comprends parfaitement les fautes d'orthographe, de grammaire, les abréviations, et même les questions mal formulées. "
-        "Ta mission est de répondre naturellement, comme un humain, en t'adaptant à la situation. "
-        "Si la question est simple (comme 'hello'), réponds simplement ('Salut !'), pas avec un long paragraphe. "
-        "Si le contexte contient de l'information utile, utilise-le pour améliorer la réponse. "
-        "Sinon, fais de ton mieux avec ce que tu comprends.\n\n"
-    )
+        "Tu es un assistant intelligent et naturel. "
+        "Réponds clairement et simplement aux questions, même mal formulées ou avec fautes. "
+        "Si la question est simple, reste bref. "
+        "Si du contexte est fourni, utilise-le. Sinon, fais de ton mieux.\n\n"
+)
 
     if history:
         prompt += "Historique de la conversation :\n"

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from extensions import db, bcrypt
 from routes.search_routes import search_bp
@@ -11,28 +11,37 @@ from flask_migrate import Migrate  # Import Migrate
 
 app = Flask(__name__)
 
-# Add this after creating the Flask app
-from flask import make_response
-
+# Gestion dynamique des CORS pour OPTIONS
 @app.before_request
 def handle_preflight():
     if request.method == "OPTIONS":
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://localhost:8501")
+        origin = request.headers.get('Origin')
+        if origin:
+            response.headers.add("Access-Control-Allow-Origin", origin)
         response.headers.add("Access-Control-Allow-Headers", "Authorization, Content-Type")
         response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         response.headers.add("Access-Control-Allow-Credentials", "true")
         return response
 
+# Ajout dynamique des headers CORS sur toutes les réponses
 @app.after_request
 def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8501'
+    origin = request.headers.get('Origin')
+    if origin:
+        response.headers['Access-Control-Allow-Origin'] = origin
     response.headers['Access-Control-Allow-Credentials'] = 'true'
     response.headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
     return response
+
+# Configure Flask-CORS avec une liste d’origines autorisées
 CORS(app, resources={
     r"/api/*": {
-        "origins": "http://localhost:8501",
+        "origins": [
+            "http://localhost:8501",
+            "http://localhost:5173",  # ton frontend vite
+            "http://localhost:3000"   # si tu utilises aussi React sur 3000
+        ],
         "methods": ["GET", "POST", "OPTIONS", "PUT", "DELETE"],
         "allow_headers": ["Authorization", "Content-Type"],
         "supports_credentials": True,
@@ -60,10 +69,8 @@ app.register_blueprint(user_bp, url_prefix="/api")
 app.register_blueprint(scraping_bp, url_prefix="/api")
 app.register_blueprint(chat_bp, url_prefix="/api")
 
-
 with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True, host="localhost", port=5000)
-  
