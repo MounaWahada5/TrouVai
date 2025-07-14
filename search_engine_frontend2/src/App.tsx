@@ -14,6 +14,7 @@ import { MdOutlineHeadsetMic, MdSpaceDashboard } from "react-icons/md";
 import { TiCalendar } from "react-icons/ti";
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
+import ReadMorePage from './pages/ReadMorePage';
 
 function AppContent() {
   const [leftOpen, setLeftOpen] = useState(true);
@@ -85,6 +86,7 @@ function AppContent() {
               <Route path="/chat" element={<Chat />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/read-more" element={<ReadMorePage />} />
             </Routes>
           </main>
         </div>

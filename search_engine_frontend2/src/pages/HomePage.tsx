@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Ensure useNavigate is imported here
 import robotImage from '../assets/fonts/robot.png';
 import Navbar from '../components/Navbar';
 
@@ -9,7 +9,7 @@ function InnerSearchComponent({ compact = false }) {
   const [selectedModel, setSelectedModel] = useState("llama3");
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // useNavigate is also used here
   const queryRef = useRef(null);
 
   const isAuthenticated = !!localStorage.getItem("token");
@@ -159,6 +159,8 @@ function InnerSearchComponent({ compact = false }) {
 
 // Le composant HomePage principal
 export default function HomePage() {
+  const navigate = useNavigate(); // Initialisez useNavigate here for HomePage
+
   return (
     // NOUVEAU: Dégradé de couleurs bleu ciel et bleu doux pour le fond
     <div className="relative flex flex-col min-w-0 h-dvh
@@ -194,7 +196,11 @@ export default function HomePage() {
               generate creative content, and streamline your workflow.
               Get instant insights for your business strategies.
             </p>
-            <button className="bg-red-600 text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-red-700 transition-colors shadow-lg mb-8">
+            {/* MODIFICATION ICI : Ajout de l'onClick pour la navigation */}
+            <button
+              onClick={() => navigate("/read-more")} // This will navigate to the new page
+              className="bg-red-600 text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-red-700 transition-colors shadow-lg mb-8"
+            >
               READ MORE
             </button>
             
